@@ -6,53 +6,64 @@ interface Props {
   setQuery: (text: string) => void;
   query: string;
 }
+const isTodoStatus = (value: string): value is TodoStatus => {
+  return Object.values(TodoStatus).includes(value as TodoStatus);
+};
+
 export const TodoFilter: React.FC<Props> = ({
   setFilterByStatus,
   setQuery,
   query,
-}: Props) => (
-  <form className="field has-addons">
-    <p className="control">
-      <span className="select">
-        <select
-          data-cy="statusSelect"
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            setFilterByStatus(event.target.value as TodoStatus)
-          }
-        >
-          <option value="all">All</option>
-          <option value="active">Active</option>
-          <option value="completed">Completed</option>
-        </select>
-      </span>
-    </p>
+}: Props) => {
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { value } = event.target;
 
-    <p className="control is-expanded has-icons-left has-icons-right">
-      <input
-        data-cy="searchInput"
-        type="text"
-        value={query}
-        onChange={event => {
-          setQuery(event.target.value);
-        }}
-        className="input"
-        placeholder="Search..."
-      />
-      <span className="icon is-left">
-        <i className="fas fa-magnifying-glass" />
-      </span>
+    if (isTodoStatus(value)) {
+      setFilterByStatus(value);
+    } else {
+      throw new Error(`Unexpected value: ${value}`);
+    }
+  };
 
-      {query && (
-        <span className="icon is-right" style={{ pointerEvents: 'all' }}>
-          {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          <button
-            data-cy="clearSearchButton"
-            type="button"
-            className="delete"
-            onClick={() => setQuery('')}
-          />
+  return (
+    <form className="field has-addons">
+      <p className="control">
+        <span className="select">
+          <select data-cy="statusSelect" onChange={handleChange}>
+            <option value="all">All</option>
+            <option value="active">Active</option>
+            <option value="completed">Completed</option>
+          </select>
         </span>
-      )}
-    </p>
-  </form>
-);
+      </p>
+
+      <p className="control is-expanded has-icons-left has-icons-right">
+        <input
+          data-cy="searchInput"
+          type="text"
+          value={query}
+          onChange={event => {
+            setQuery(event.target.value);
+          }}
+          className="input"
+          placeholder="Search..."
+        />
+        <span className="icon is-left">
+          <i className="fas fa-magnifying-glass" />
+        </span>
+
+        {query && (
+          <span className="icon is-right" style={{ pointerEvents: 'all' }}>
+            {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+            <button
+              data-cy="clearSearchButton"
+              type="button"
+              className="delete"
+              onClick={() => setQuery('')}
+            />
+          </span>
+        )}
+      </p>
+    </form>
+  );
+};
