@@ -6,33 +6,25 @@ interface Props {
   setQuery: (text: string) => void;
   query: string;
 }
-const isTodoStatus = (value: string): value is TodoStatus => {
-  return Object.values(TodoStatus).includes(value as TodoStatus);
-};
 
 export const TodoFilter: React.FC<Props> = ({
   setFilterByStatus,
   setQuery,
   query,
 }: Props) => {
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const { value } = event.target;
-
-    if (isTodoStatus(value)) {
-      setFilterByStatus(value);
-    } else {
-      throw new Error(`Unexpected value: ${value}`);
-    }
-  };
-
   return (
     <form className="field has-addons">
       <p className="control">
         <span className="select">
-          <select data-cy="statusSelect" onChange={handleChange}>
-            <option value="all">All</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
+          <select
+            data-cy="statusSelect"
+            onChange={event =>
+              setFilterByStatus(event.target.value as TodoStatus)
+            }
+          >
+            <option value={TodoStatus.ALL}>All</option>
+            <option value={TodoStatus.ACTIVE}>Active</option>
+            <option value={TodoStatus.COMPLETED}>Completed</option>
           </select>
         </span>
       </p>
