@@ -12,6 +12,11 @@ export const TodoFilter: React.FC<Props> = ({
   setQuery,
   query,
 }: Props) => {
+  const statusList = Object.values(TodoStatus);
+  const capitalize = (str: string): string => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+
   return (
     <form className="field has-addons">
       <p className="control">
@@ -22,9 +27,13 @@ export const TodoFilter: React.FC<Props> = ({
               setFilterByStatus(event.target.value as TodoStatus)
             }
           >
-            <option value={TodoStatus.ALL}>All</option>
-            <option value={TodoStatus.ACTIVE}>Active</option>
-            <option value={TodoStatus.COMPLETED}>Completed</option>
+            {statusList.map((status: TodoStatus) => {
+              return (
+                <option key={status} value={status}>
+                  {capitalize(status)}
+                </option>
+              );
+            })}
           </select>
         </span>
       </p>
